@@ -28,40 +28,46 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.label_budget = new System.Windows.Forms.Label();
+            this.linkLabel_Title = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
-            // label1
+            // label_budget
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(38, 37);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(116, 20);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Important Text!";
+            this.label_budget.AutoSize = true;
+            this.label_budget.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label_budget.Location = new System.Drawing.Point(12, 73);
+            this.label_budget.Name = "label_budget";
+            this.label_budget.Size = new System.Drawing.Size(77, 13);
+            this.label_budget.TabIndex = 0;
+            this.label_budget.Text = "Budget: Hourly";
+            this.label_budget.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SlidePopUp_MouseClick);
             // 
-            // button1
+            // linkLabel_Title
             // 
-            this.button1.Location = new System.Drawing.Point(57, 65);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.linkLabel_Title.Location = new System.Drawing.Point(12, 9);
+            this.linkLabel_Title.Name = "linkLabel_Title";
+            this.linkLabel_Title.Size = new System.Drawing.Size(193, 61);
+            this.linkLabel_Title.TabIndex = 2;
+            this.linkLabel_Title.TabStop = true;
+            this.linkLabel_Title.Text = "linkLabel1";
+            this.linkLabel_Title.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_Title_LinkClicked);
+            this.linkLabel_Title.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SlidePopUp_MouseClick);
             // 
             // SlidePopUp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(200, 100);
+            this.ClientSize = new System.Drawing.Size(219, 93);
             this.ControlBox = false;
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.linkLabel_Title);
+            this.Controls.Add(this.label_budget);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "SlidePopUp";
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.TopMost = true;
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SlidePopUp_MouseClick);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -69,7 +75,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label_budget;
+        private System.Windows.Forms.LinkLabel linkLabel_Title;
     }
 }

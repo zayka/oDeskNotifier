@@ -12,7 +12,9 @@ namespace oDeskNotifier {
         public string Link;
         public string Title;
         private string description;
-        public string Description { get { return description; } set { description = value; Budget = GetBudget(); Date = GetDate(); oDeskID = GetID(); } }
+        public string Description { get { return description; } set { ParseDescription(value); } }
+
+
         public bool IsFixed { get { return Budget != 0; } }
         public int Budget = 0;
         public DateTime Date;
@@ -47,9 +49,9 @@ namespace oDeskNotifier {
                    " Description='" + Description + "', " +
                    " IsFixed='" + (IsFixed ? 1 : -1).ToString() + "', " +
                    " Budget='" + Budget + "', " +
-                   " Date='" + UnixTime.DateTimeToUnixTimestamp(Date).ToString() +"'"+
+                   " Date='" + UnixTime.DateTimeToUnixTimestamp(Date).ToString() + "'" +
 
-                    " WHERE oDeskID='" + oDeskID+ "'";
+                    " WHERE oDeskID='" + oDeskID + "'";
         }
 
         string IDBEntity.InsertQuery() {
@@ -99,20 +101,35 @@ namespace oDeskNotifier {
         }
         #endregion
 
-        private int GetBudget() {
-            var m = Regex.Match(description, @"<b>Budget</b>: \$(\d+)");
+        private void ParseDescription(string desc) {
+            Budget = GetBudget(desc);
+            Date = GetDate(desc);
+            oDeskID = GetID(desc);
+            description = GetDescription(desc);
+        }
+
+        private int GetBudget(string desc) {
+            var m = Regex.Match(desc, @"<b>Budget</b>: \$(\d+)");
             if (m.Success) return Utilities.GetInt(m.Groups[1].Value);
             return 0;
         }
 
-        private DateTime GetDate() {
-            var dateStr = Regex.Match(description, @">Posted On</b>: ([\w\W\s\S]+?)<b").Groups[1].Value;
-            return DateTime.Parse(dateStr.Replace(" UTC", "Z"));
+        private DateTime GetDate(string desc) {
+            var m = Regex.Match(desc, @">Posted On</b>: ([\w\W\s\S]+?)<b");
+            if (m.Success) return DateTime.Parse(m.Groups[1].Value.Replace(" UTC", "Z"));
+            return DateTime.Now;
         }
 
-        private int GetID() {
-            var idStr = Regex.Match(description, @">ID</b>: (\d+)<b").Groups[1].Value;
-            return Utilities.GetInt(idStr);
+        private int GetID(string desc) {
+            var m = Regex.Match(desc, @">ID</b>: (\d+)<b");
+            if (m.Success) return Utilities.GetInt(m.Groups[1].Value);
+            return 0;
+        }
+
+        private string GetDescription(string desc) {
+            var m = Regex.Match(desc, @"([\w\W\s\S]+?)<b>");
+            if (m.Success) return m.Groups[1].Value;
+            return "";
         }
     }
 }

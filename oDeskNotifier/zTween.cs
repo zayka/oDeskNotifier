@@ -4,7 +4,42 @@ using System.Linq;
 using System.Text;
 
 namespace oDeskNotifier {
-    static class zTween {
+    public static class zTween {
+
+        public enum EaseType {
+            Linear,
+            Clerp,
+            Spring,
+            EaseInQuad,
+            EaseInOutQuad,
+            EaseInCubic,
+            EaseOutCubic,
+            EaseInOutCubic,
+
+            EaseInQuart,
+            EaseOutQuart,
+            EaseInQuint,
+            EaseOutQuint,
+            EaseInSine,
+            EaseOutSine,
+            EaseInOutSine,
+            EaseInExpo,
+            EaseOutExpo,
+            EaseInOutExpo,
+            EaseInCirc,
+            EaseOutCirc,
+            EaseInOutCirc,
+            EaseInBounce,
+            EaseOutnBounce,
+            EaseInOutBounce,
+            EaseInBack,
+            EaseOutBack,
+            EaseInOutBack,
+            punch,
+            EaseInElastic,
+            EaseOutElastic,
+            EaseInOutElastic,
+        }
 
         private static float Lerp(float start, float end, float value) {
             return (value - start) / (end - start);

@@ -6,8 +6,8 @@ using System.Data.SQLite;
 using System.Runtime.CompilerServices;
 using System.Collections;
 
-namespace oDeskNotifier {
-
+namespace oDeskNotifier {   
+    
     class SQLiteBase : IDisposable {
         static object locker = new object();
         string dbName = "";

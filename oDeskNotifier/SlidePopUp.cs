@@ -20,7 +20,7 @@ namespace oDeskNotifier {
         private Point to;
         private float duration = 3;
 
-     
+
 
 
         public SlidePopUp(Form parent, Point from, Point to, float duration) {
@@ -29,12 +29,12 @@ namespace oDeskNotifier {
             this.from = from;
             this.to = to;
             this.duration = duration * 1000;
-            this.TopMost =true;
-/*
-            if (parent.InvokeRequired)
-                parent.Invoke(new Action(() => parent.Focus()));
-            else parent.Focus();
-            */
+            this.TopMost = true;
+            /*
+                        if (parent.InvokeRequired)
+                            parent.Invoke(new Action(() => parent.Focus()));
+                        else parent.Focus();
+                        */
 
 
             new Thread(TweenMove).Start();
@@ -57,18 +57,23 @@ namespace oDeskNotifier {
                 var pos = Location;
                 pos.X = (int)Math.Round(currentX);
                 pos.Y = (int)Math.Round(currentY);
-                
-                if (this.InvokeRequired)
-                    Invoke(new Action(() => { if (!this.IsDisposed) this.Location = pos; }));
-                else this.Location = pos;
-                
-              
-             
-                
+
+                try {
+                    if (this.InvokeRequired)
+                        Invoke(new Action(() => { if (!this.IsDisposed) this.Location = pos; }));
+                    else this.Location = pos;
+                }
+                catch { }
+
+
+
                 time += step;
                 Thread.Sleep(step);
             }
-            if (!isClose) Invoke(new Action(() => this.Close()));
+            try {
+                if (!isClose) Invoke(new Action(() => { if (!this.IsDisposed) this.Close(); }));
+            }
+            catch { }
 
         }
     }

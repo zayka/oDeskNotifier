@@ -18,11 +18,12 @@ using System.Threading;
 
 
 namespace oDeskNotifier {
+
     public partial class Form1 : Form {
 
         private string rssUrl = "";
         private SQLiteBase database;
-        private int period = 10 * 1000;
+        private int period = 50 * 1000;
 
         public Form1() {
             InitializeComponent();
@@ -34,8 +35,8 @@ namespace oDeskNotifier {
         private void Form1_Load(object sender, EventArgs e) {
 
 
-         //   var jobs = GetCurretnList(rssUrl);
-        //    database.Update(jobs);
+            //   var jobs = GetCurretnList(rssUrl);
+            //    database.Update(jobs);
 
             new Thread(MainThread).Start();
         }
@@ -56,7 +57,7 @@ namespace oDeskNotifier {
                 oJob j = new oJob();
                 j.Link = HttpUtility.UrlDecode(HttpUtility.HtmlDecode(node.SelectSingleNode("link").InnerText));
                 j.Title = HttpUtility.HtmlDecode(node.SelectSingleNode("title").InnerText).Replace("'", "");
-                j.Description = HttpUtility.HtmlDecode(node.SelectSingleNode("description").InnerText).Replace("<br />", "").Replace("'","");
+                j.Description = HttpUtility.HtmlDecode(node.SelectSingleNode("description").InnerText).Replace("<br />", "").Replace("'", "");
                 jobs.Add(j);
             }
             return jobs;
@@ -64,27 +65,32 @@ namespace oDeskNotifier {
 
         private void MainThread() {
             while (true) {
-                var jobs = GetCurretnList(rssUrl);
+                try {
+                    var jobs = GetCurretnList(rssUrl);
+                    jobs.Reverse();
 
-                var inserted = database.Update(jobs);
+                    var inserted = database.Update(jobs);
 
-                List<SlidePopUp> popups = new List<SlidePopUp>();
+                    List<SlidePopUp> popups = new List<SlidePopUp>();
 
 
-                foreach (var item in inserted) {
+                    foreach (var item in inserted) {
 
-                    Point p1 = new Point(0, 0);
-                    Point p2 = new Point(200, 0);
+                        Point p1 = new Point(0, 0);
+                        Point p2 = new Point(200, 0);
 
-                    var p = new SlidePopUp(this, p1, p2, 5);
-                    Invoke(new Action(() => p.Show()));
-                    popups.Add(p);
-                    Thread.Sleep(500);
+                        var p = new SlidePopUp(this, p1, p2, 5);
+                        Invoke(new Action(() => p.Show()));
+                        popups.Add(p);
+                        Thread.Sleep(500);
+                    }
+
+                    var list = popups.Where(p => !p.IsDisposed);
+                    while (list.Count() != 0) { Thread.Sleep(100); list = popups.Where(p => p.IsDisposed); }
+                    Thread.Sleep(period);
+                    if (this.IsDisposed) break;
                 }
-
-                var list = popups.Where(p => !p.IsDisposed);
-                while (list.Count() != 0) { Thread.Sleep(100); list = popups.Where(p => p.IsDisposed); }
-                Thread.Sleep(period);
+                catch { }
             }
         }
 

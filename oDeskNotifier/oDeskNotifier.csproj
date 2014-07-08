@@ -57,11 +57,11 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="oJob.cs" />
-    <Compile Include="PopUp1.cs">
+    <Compile Include="SlidePopUp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PopUp1.designer.cs">
-      <DependentUpon>PopUp1.cs</DependentUpon>
+    <Compile Include="SlidePopUp.designer.cs">
+      <DependentUpon>SlidePopUp.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,8 +73,8 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PopUp1.resx">
-      <DependentUpon>PopUp1.cs</DependentUpon>
+    <EmbeddedResource Include="SlidePopUp.resx">
+      <DependentUpon>SlidePopUp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -85,6 +85,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="oDeskJobs.sqlite3" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

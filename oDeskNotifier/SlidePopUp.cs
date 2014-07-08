@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace oDeskNotifier {
 
-    public partial class PopUp1 : Form {
+    public partial class SlidePopUp : Form {
         private Form parent;
         private int time = 0;
         private int step = 50;
@@ -20,16 +20,23 @@ namespace oDeskNotifier {
         private Point to;
         private float duration = 3;
 
+     
 
 
-        public PopUp1(Form parent, Point from, Point to, float duration) {
+        public SlidePopUp(Form parent, Point from, Point to, float duration) {
             InitializeComponent();
             this.parent = parent;
             this.from = from;
             this.to = to;
             this.duration = duration * 1000;
+            this.TopMost =true;
+/*
+            if (parent.InvokeRequired)
+                parent.Invoke(new Action(() => parent.Focus()));
+            else parent.Focus();
+            */
 
-            parent.Focus();
+
             new Thread(TweenMove).Start();
         }
 
@@ -41,6 +48,7 @@ namespace oDeskNotifier {
         private void TweenMove(object o) {
             time = 0;
             while (time < duration) {
+                if (isClose) break;
                 var value = 1f * time / (duration);
                 var currentX = zTween.easeOutExpo(from.X, to.X, value);
                 var currentY = zTween.easeOutExpo(from.Y, to.Y, value);
@@ -49,10 +57,14 @@ namespace oDeskNotifier {
                 var pos = Location;
                 pos.X = (int)Math.Round(currentX);
                 pos.Y = (int)Math.Round(currentY);
-                try {
-                    Invoke(new Action(() => Location = pos));
-                }
-                catch { }
+                
+                if (this.InvokeRequired)
+                    Invoke(new Action(() => { if (!this.IsDisposed) this.Location = pos; }));
+                else this.Location = pos;
+                
+              
+             
+                
                 time += step;
                 Thread.Sleep(step);
             }

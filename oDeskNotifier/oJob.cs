@@ -41,20 +41,20 @@ namespace oDeskNotifier {
 
         string IDBEntity.UpdateQuery() {
             return "UPDATE Jobs SET " +
-                   " oDeskID=" + oDeskID +
-                   " Link=" + Link +
-                   " Title=" + Title +
-                   " Description=" + Description +
-                   " IsFixed=" + (IsFixed ? 1 : -1).ToString() +
-                   " Budget=" + Budget +
-                   " Date=" + UnixTime.DateTimeToUnixTimestamp(Date).ToString() +
+                   " oDeskID='" + oDeskID + "', " +
+                   " Link='" + Link + "', " +
+                   " Title='" + Title + "', " +
+                   " Description='" + Description + "', " +
+                   " IsFixed='" + (IsFixed ? 1 : -1).ToString() + "', " +
+                   " Budget='" + Budget + "', " +
+                   " Date='" + UnixTime.DateTimeToUnixTimestamp(Date).ToString() +"'"+
 
-                    " WHERE Hash='" + GetHashCode() + "'";
+                    " WHERE oDeskID='" + oDeskID+ "'";
         }
 
         string IDBEntity.InsertQuery() {
             StringBuilder result = new StringBuilder(100);
-            result.Append("INSERT INTO Videos (");
+            result.Append("INSERT INTO Jobs (");
             result.Append("oDeskId, Link, Title, Description, IsFixed, Budget, Date, Created) VALUES ('");
             result.Append(
                  String.Join("','", new object[] {     

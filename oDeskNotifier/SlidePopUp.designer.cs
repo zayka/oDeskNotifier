@@ -1,6 +1,6 @@
 ﻿namespace oDeskNotifier
 {
-    partial class PopUp1
+    partial class SlidePopUp
     {
         /// <summary>
         /// Required designer variable.

@@ -64,7 +64,10 @@ namespace oDeskNotifier {
             string rss = ZWeb.RequestString(rssUrl, "GET");
             List<oJob> jobs = new List<oJob>();
             XmlDocument xdoc = new XmlDocument();
-            xdoc.LoadXml(rss);
+            try {
+                xdoc.LoadXml(rss);
+            }
+            catch { MessageBox.Show("Bad RSS", "LOL"); }
             var nodes = xdoc.SelectNodes("//item");
             foreach (XmlElement node in nodes) {
                 oJob j = new oJob();
@@ -115,7 +118,7 @@ namespace oDeskNotifier {
 
                     int time = 0;
                     int step = 1000;
-                    while (time < period) { if (this.IsDisposed) break; time += step; Thread.Sleep(step); }
+                    while (time < period) { if (this.IsDisposed) return; time += step; Thread.Sleep(step); }
 
                 }
                 catch { }

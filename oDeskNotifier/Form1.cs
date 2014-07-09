@@ -25,21 +25,23 @@ namespace oDeskNotifier {
         private SQLiteBase database;
         private int period = 10 * 1000;
         private string configFilename = "config.cfg";
+        private string databaseFilename = "oDeskJobs.sqlite3";
         bool onHoverTextBox = false;
 
 
         public Form1() {
 
             InitializeComponent();
-            database = new SQLiteBase("oDeskJobs.sqlite3");
             Settings.Load(configFilename);
             textBox_rss.Text = Settings.RSSURL;
             rssUrl = Settings.RSSURL;
-            //rssUrl = "https://www.odesk.com/jobs/rss?c1[]=Software+Development&t[]=0&t[]=1&dur[]=0&dur[]=1&dur[]=13&dur[]=26&dur[]=none&wl[]=10&wl[]=30&wl[]=none&tba[]=0&tba[]=1-9&tba[]=10-&exp[]=1&exp[]=2&exp[]=3&amount[]=Min&amount[]=Max&q=NOT+%28android+OR+iphone%29&sortBy=s_ctime+desc";
         }
 
         private void Form1_Load(object sender, EventArgs e) {
 
+            if (File.Exists(databaseFilename))
+                database = new SQLiteBase(databaseFilename);
+            else { MessageBox.Show("Database file " + databaseFilename + " not found."); this.Close(); return; }
 
             var jobs = GetCurretnList(rssUrl);
             jobs.Reverse();

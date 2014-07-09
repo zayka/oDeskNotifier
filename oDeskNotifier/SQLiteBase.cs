@@ -18,8 +18,10 @@ namespace oDeskNotifier {
                     if (dbName == "") { throw new Exception("Database name empty"); }
                     if (sqliteConnection == null) {
                         sqliteConnection = new SQLiteConnection("URI=file:" + dbName);
-                        sqliteConnection.Open();
-
+                        try {
+                            sqliteConnection.Open();
+                        }
+                        catch { throw new Exception("Bad database file"); }
                     }
                     return sqliteConnection;
                 }

@@ -25,27 +25,26 @@ namespace oDeskNotifier {
         private SQLiteBase database;
         private int period = 10 * 1000;
         private string configFilename = "config.cfg";
+        bool onHoverTextBox = false;
 
 
         public Form1() {
+
             InitializeComponent();
             database = new SQLiteBase("oDeskJobs.sqlite3");
             Settings.Load(configFilename);
             textBox_rss.Text = Settings.RSSURL;
             rssUrl = Settings.RSSURL;
             //rssUrl = "https://www.odesk.com/jobs/rss?c1[]=Software+Development&t[]=0&t[]=1&dur[]=0&dur[]=1&dur[]=13&dur[]=26&dur[]=none&wl[]=10&wl[]=30&wl[]=none&tba[]=0&tba[]=1-9&tba[]=10-&exp[]=1&exp[]=2&exp[]=3&amount[]=Min&amount[]=Max&q=NOT+%28android+OR+iphone%29&sortBy=s_ctime+desc";
-            var l1 = database.Query("SELECT * FROM jobs order by id desc LIMIT 10 ");
-            var l2 = l1.Select(j => oJob.Load(j)).ToList();
-
-            AddRow(l2);
         }
 
         private void Form1_Load(object sender, EventArgs e) {
 
 
-            //var jobs = GetCurretnList(rssUrl);
-            //jobs.Reverse();
-            //database.Update(jobs);
+            var jobs = GetCurretnList(rssUrl);
+            jobs.Reverse();
+            database.Update(jobs);
+            AddRow(jobs);
             /*
             var rect = Screen.AllScreens[0].WorkingArea;
             var p1 = new Point(rect.Right - SlidePopUp.WindowSize.Width, rect.Bottom);
@@ -57,7 +56,7 @@ namespace oDeskNotifier {
             var p = new SlidePopUp(param);
             p.Show();
             */
-            //new Thread(MainThread).Start();
+            new Thread(MainThread).Start();
             if (dataGridView_jobGrid.CurrentCell != null) dataGridView_jobGrid.CurrentCell.Selected = false;
         }
 
@@ -91,7 +90,7 @@ namespace oDeskNotifier {
                     foreach (var item in inserted) {
 
                         var rect = Screen.AllScreens[0].WorkingArea;
-                        var p1 = new Point(rect.Right - SlidePopUp.WindowSize.Width, rect.Bottom);
+                        var p1 = new Point(rect.Right, rect.Bottom - SlidePopUp.WindowSize.Height);
                         var p2 = new Point(rect.Right - SlidePopUp.WindowSize.Width, rect.Bottom - SlidePopUp.WindowSize.Height);
 
                         var param = new SlidePopUp.Parameters(this, p1, p2);
@@ -101,9 +100,10 @@ namespace oDeskNotifier {
                         param.LabelLinkTag = item.Link;
                         param.LabelLinkTooltip = item.Description;
                         param.Budget = item.Budget;
-                        var p = new SlidePopUp(param);
-                        Invoke(new Action(() => p.Show()));
-                        popups.Add(p);
+                        var slidePopUp = new SlidePopUp(param);
+                        Invoke(new Action(() => slidePopUp.Show()));
+                        popups.ForEach(p => { if (p != null && !p.IsDisposed) { var pTmp = p.Displacement; pTmp.Y -= SlidePopUp.WindowSize.Height - 1; p.Displacement = pTmp; } }); //компилятор приказал так сделать (CS1690)
+                        popups.Add(slidePopUp);
                         InsertRow(item);
                         Thread.Sleep(500);
                     }
@@ -139,16 +139,19 @@ namespace oDeskNotifier {
         }
 
         private void InsertRow(oJob job) {
+            var list = new List<oJob>();
+            list.Add(job);
+            InsertRow(list);
+        }
+
+        private void InsertRow(IEnumerable<oJob> list) {
             Threadsafe(() => {
-                var list = new List<oJob>();
-                list.Add(job);
                 var rows = CreateRowArray(list);
                 for (int i = 0; i < rows.Length; i++) {
                     dataGridView_jobGrid.Rows.Insert(0, rows[i]);
                 }
                 dataGridView_jobGrid.CurrentCell.Selected = false;
             });
-
         }
 
         private DataGridViewRow[] CreateRowArray(IEnumerable<oJob> list) {
@@ -223,7 +226,6 @@ namespace oDeskNotifier {
             }
         }
 
-
         private void dataGridView_jobGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e) {
             if (e.RowIndex < 0) return;
             dataGridView_jobGrid.Rows[e.RowIndex].Selected = true;
@@ -235,8 +237,17 @@ namespace oDeskNotifier {
         }
 
         private void dataGridView_jobGrid_CellClick(object sender, DataGridViewCellEventArgs e) {
-
+            if (e.RowIndex == -1) return;
             System.Diagnostics.Process.Start(dataGridView_jobGrid[0, e.RowIndex].Tag.ToString());
+        }
+
+        private void Form1_MouseMove(object sender, MouseEventArgs e) {
+            var parent = sender as Control;
+            var ctrl = parent.GetChildAtPoint(e.Location);
+            if (ctrl == textBox_rss && !onHoverTextBox) { onHoverTextBox = true; textBox_rss.Enabled = true; return; }
+
+            onHoverTextBox = false;
+            textBox_rss.Enabled = false;
         }
         #endregion
 

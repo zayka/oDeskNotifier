@@ -46,6 +46,7 @@ namespace oDeskNotifier {
         private float totalDuration = 3;
 
         public static Size WindowSize = new Size(221, 95);
+        public Point Displacement= new Point(0,0);
 
 
         public SlidePopUp(Parameters param) {
@@ -92,8 +93,8 @@ namespace oDeskNotifier {
 
 
                 var pos = Location;
-                pos.X = (int)Math.Round(currentX);
-                pos.Y = (int)Math.Round(currentY);
+                pos.X = (int)Math.Round(currentX)+Displacement.X;
+                pos.Y = (int)Math.Round(currentY)+Displacement.Y;
 
                
                 try {

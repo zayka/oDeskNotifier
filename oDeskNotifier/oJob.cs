@@ -77,7 +77,7 @@ namespace oDeskNotifier {
             this.oDeskID = Utilities.GetInt(newElement["oDeskID"].ToString());
             this.Link = newElement["Link"].ToString();
             this.Title = newElement["Title"].ToString();
-            this.Description = newElement["Description"].ToString();
+            this.description = newElement["Description"].ToString();
             this.Budget = Utilities.GetInt(newElement["Budget"].ToString());
             this.Date = UnixTime.UnixTimeStampToDateTime(Utilities.GetInt(newElement["Date"].ToString()));
             this.Created = Utilities.GetInt(newElement["Created"].ToString());

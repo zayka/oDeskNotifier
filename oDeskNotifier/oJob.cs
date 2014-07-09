@@ -88,15 +88,15 @@ namespace oDeskNotifier {
         }
 
 
-        static oJob Load(Hashtable newElement) {
+        public static oJob Load(Hashtable newElement) {
             oJob j = new oJob();
             j.oDeskID = Utilities.GetInt(newElement["oDeskID"].ToString());
             j.Link = newElement["Link"].ToString();
             j.Title = newElement["Title"].ToString();
-            j.Description = newElement["Description"].ToString();
             j.Budget = Utilities.GetInt(newElement["Budget"].ToString());
             j.Date = UnixTime.UnixTimeStampToDateTime(Utilities.GetInt(newElement["Date"].ToString()));
             j.Created = Utilities.GetInt(newElement["Created"].ToString());
+            j.description = newElement["Description"].ToString();
             return j;
         }
         #endregion
@@ -127,9 +127,15 @@ namespace oDeskNotifier {
         }
 
         private string GetDescription(string desc) {
-            var m = Regex.Match(desc, @"([\w\W\s\S]+?)<b>");
-            if (m.Success) return m.Groups[1].Value;
-            return "";
+            var body = Regex.Split(desc, "<b>");
+            if (body.Count() > 0)
+                return body[0];
+            else
+                return "";
+        }
+
+        public override string ToString() {
+            return oDeskID + ":" + Title;
         }
     }
 }

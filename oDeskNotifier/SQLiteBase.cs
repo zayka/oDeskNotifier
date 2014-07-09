@@ -103,7 +103,23 @@ namespace oDeskNotifier {
                     }
                     result.Add(t);
                 }
+            }
+            return result;
+        }
 
+        public List<Hashtable> Query(string query) {
+            List<Hashtable> result = new List<Hashtable>();
+
+            using (SQLiteCommand cmd = SQliteConnection.CreateCommand()) {
+                cmd.CommandText = query;
+                var rdr = cmd.ExecuteReader();
+                while (rdr.Read()) {
+                    Hashtable t = new Hashtable();
+                    for (int i = 0; i < rdr.FieldCount; i++) {
+                        t.Add(rdr.GetName(i), rdr.GetValue(i));
+                    }
+                    result.Add(t);
+                }
             }
             return result;
         }

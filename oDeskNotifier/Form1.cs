@@ -23,10 +23,11 @@ namespace oDeskNotifier {
 
         private string rssUrl = "";
         private SQLiteBase database;
-        private int period = 10 * 1000;
+        private int period = 50 * 1000;
         private string configFilename = "config.cfg";
         private string databaseFilename = "oDeskJobs.sqlite3";
-        bool onHoverTextBox = false;
+        private bool onHoverTextBox = false;
+        private int maxRow = 25;
 
 
         public Form1() {
@@ -47,6 +48,7 @@ namespace oDeskNotifier {
             jobs.Reverse();
             database.Update(jobs);
             AddRow(jobs);
+            DeleteExtraRows(maxRow);
             /*
             var rect = Screen.AllScreens[0].WorkingArea;
             var p1 = new Point(rect.Right - SlidePopUp.WindowSize.Width, rect.Bottom);
@@ -110,6 +112,7 @@ namespace oDeskNotifier {
                         popups.ForEach(p => { if (p != null && !p.IsDisposed) { var pTmp = p.Displacement; pTmp.Y -= SlidePopUp.WindowSize.Height - 1; p.Displacement = pTmp; } }); //компилятор приказал так сделать (CS1690)
                         popups.Add(slidePopUp);
                         InsertRow(item);
+                        DeleteExtraRows(maxRow);
                         Thread.Sleep(500);
                     }
 
@@ -140,6 +143,16 @@ namespace oDeskNotifier {
                 if (dataGridView_jobGrid.CurrentCell != null) dataGridView_jobGrid.CurrentCell.Selected = false;
                 dataGridView_jobGrid.Invalidate();
                 dataGridView_jobGrid.Update();
+            });
+        }
+
+        private void DeleteExtraRows(int max) {
+            Threadsafe(() => {
+
+                while (dataGridView_jobGrid.Rows.Count > max) {
+                    var row = dataGridView_jobGrid.Rows[dataGridView_jobGrid.Rows.Count - 1];
+                    dataGridView_jobGrid.Rows.Remove(row);
+                }
             });
         }
 

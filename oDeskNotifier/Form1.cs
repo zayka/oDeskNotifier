@@ -23,8 +23,8 @@ namespace oDeskNotifier {
 
         private string rssUrl = "";
         private SQLiteBase database;
-        private int period = 10 * 1000;
-        private string configFilename;
+        private int period = 50 * 1000;
+        private string configFilename = "config.cfg";
         private bool isRealClosing = false;
 
 
@@ -32,10 +32,9 @@ namespace oDeskNotifier {
         public Form1() {
             InitializeComponent();
             database = new SQLiteBase("oDeskJobs.sqlite3");
-            Settings.Load("config.cfg");
+            Settings.Load(configFilename);
             textBox_rss.Text = Settings.RSSURL;
             rssUrl = Settings.RSSURL;
-
             //rssUrl = "https://www.odesk.com/jobs/rss?c1[]=Software+Development&t[]=0&t[]=1&dur[]=0&dur[]=1&dur[]=13&dur[]=26&dur[]=none&wl[]=10&wl[]=30&wl[]=none&tba[]=0&tba[]=1-9&tba[]=10-&exp[]=1&exp[]=2&exp[]=3&amount[]=Min&amount[]=Max&q=NOT+%28android+OR+iphone%29&sortBy=s_ctime+desc";
         }
 
@@ -68,7 +67,7 @@ namespace oDeskNotifier {
             foreach (XmlElement node in nodes) {
                 oJob j = new oJob();
                 j.Link = HttpUtility.UrlDecode(HttpUtility.HtmlDecode(node.SelectSingleNode("link").InnerText));
-                j.Title = HttpUtility.HtmlDecode(node.SelectSingleNode("title").InnerText).Replace("'", "");
+                j.Title = HttpUtility.HtmlDecode(node.SelectSingleNode("title").InnerText).Replace("'", "").Replace("- oDesk", ""); ;
                 j.Description = HttpUtility.HtmlDecode(node.SelectSingleNode("description").InnerText).Replace("<br />", "").Replace("'", "");
                 jobs.Add(j);
             }
@@ -119,8 +118,9 @@ namespace oDeskNotifier {
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
             Settings.RSSURL = rssUrl;
             Settings.Save();
-            if (!isRealClosing) {
+            if (!isRealClosing&& e.CloseReason == CloseReason.UserClosing) {
                 this.Hide();
+                notifyIcon1.Visible = true;
                 e.Cancel = true;
             }
         }
@@ -132,6 +132,7 @@ namespace oDeskNotifier {
         private void Form1_Resize(object sender, EventArgs e) {
             if (WindowState == FormWindowState.Minimized) {
                 this.Hide();
+                notifyIcon1.Visible = true;
             }
         }
 
@@ -139,6 +140,7 @@ namespace oDeskNotifier {
             if (e.Button == System.Windows.Forms.MouseButtons.Left) {
                 this.Show();
                 this.WindowState = FormWindowState.Normal;
+                notifyIcon1.Visible = false;
             }
             if (e.Button == System.Windows.Forms.MouseButtons.Right) {
             }

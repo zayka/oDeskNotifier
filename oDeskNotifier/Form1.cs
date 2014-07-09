@@ -23,7 +23,7 @@ namespace oDeskNotifier {
 
         private string rssUrl = "";
         private SQLiteBase database;
-        private int period = 50 * 1000;
+        private int period = 10 * 1000;
         private string configFilename = "config.cfg";
 
 
@@ -57,7 +57,8 @@ namespace oDeskNotifier {
             var p = new SlidePopUp(param);
             p.Show();
             */
-            //   new Thread(MainThread).Start();
+            //new Thread(MainThread).Start();
+            if (dataGridView_jobGrid.CurrentCell != null) dataGridView_jobGrid.CurrentCell.Selected = false;
         }
 
         private List<oJob> GetCurretnList(string rssUrl) {
@@ -103,6 +104,7 @@ namespace oDeskNotifier {
                         var p = new SlidePopUp(param);
                         Invoke(new Action(() => p.Show()));
                         popups.Add(p);
+                        InsertRow(item);
                         Thread.Sleep(500);
                     }
 
@@ -130,18 +132,22 @@ namespace oDeskNotifier {
             var rows = CreateRowArray(list);
             Threadsafe(() => {
                 dataGridView_jobGrid.Rows.AddRange(rows.ToArray());
+                if (dataGridView_jobGrid.CurrentCell != null) dataGridView_jobGrid.CurrentCell.Selected = false;
                 dataGridView_jobGrid.Invalidate();
                 dataGridView_jobGrid.Update();
             });
         }
 
         private void InsertRow(oJob job) {
-            var list = new List<oJob>();
-            list.Add(job);
-            var rows = CreateRowArray(list);
-            for (int i = 0; i < rows.Length; i++) {
-                dataGridView_jobGrid.Rows.Insert(0, rows[i]);
-            }
+            Threadsafe(() => {
+                var list = new List<oJob>();
+                list.Add(job);
+                var rows = CreateRowArray(list);
+                for (int i = 0; i < rows.Length; i++) {
+                    dataGridView_jobGrid.Rows.Insert(0, rows[i]);
+                }
+                dataGridView_jobGrid.CurrentCell.Selected = false;
+            });
 
         }
 
@@ -158,6 +164,7 @@ namespace oDeskNotifier {
                 buffer[idx++] = job.Budget == 0 ? "Hourly" : job.Budget.ToString();
                 rows.Add(new DataGridViewRow());
                 rows[rows.Count - 1].CreateCells(dataGridView_jobGrid, buffer);
+                rows[rows.Count - 1].Cells[0].Tag = job.Link;
             }
             return rows.ToArray();
         }
@@ -198,7 +205,6 @@ namespace oDeskNotifier {
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
             this.Close();
         }
-        #endregion
 
         private void dataGridView_jobGrid_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
             var l1 = dataGridView_jobGrid.Rows.Cast<DataGridViewRow>().ToList();
@@ -216,5 +222,23 @@ namespace oDeskNotifier {
                 dataGridView_jobGrid.Rows.AddRange(l1.ToArray());
             }
         }
+
+
+        private void dataGridView_jobGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e) {
+            if (e.RowIndex < 0) return;
+            dataGridView_jobGrid.Rows[e.RowIndex].Selected = true;
+        }
+
+        private void dataGridView_jobGrid_CellMouseLeave(object sender, DataGridViewCellEventArgs e) {
+            if (e.RowIndex < 0) return;
+            dataGridView_jobGrid.Rows[e.RowIndex].Selected = false;
+        }
+
+        private void dataGridView_jobGrid_CellClick(object sender, DataGridViewCellEventArgs e) {
+
+            System.Diagnostics.Process.Start(dataGridView_jobGrid[0, e.RowIndex].Tag.ToString());
+        }
+        #endregion
+
     }
 }

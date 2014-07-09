@@ -25,6 +25,7 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.textBox_rss = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -81,6 +82,7 @@
             // 
             // dataGridView_jobGrid
             // 
+            this.dataGridView_jobGrid.AllowUserToAddRows = false;
             this.dataGridView_jobGrid.AllowUserToDeleteRows = false;
             this.dataGridView_jobGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -97,6 +99,14 @@
             this.oDeskID,
             this.Title,
             this.Budget});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.ButtonShadow;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView_jobGrid.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView_jobGrid.Location = new System.Drawing.Point(12, 76);
             this.dataGridView_jobGrid.Name = "dataGridView_jobGrid";
             this.dataGridView_jobGrid.ReadOnly = true;
@@ -104,6 +114,9 @@
             this.dataGridView_jobGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView_jobGrid.Size = new System.Drawing.Size(459, 350);
             this.dataGridView_jobGrid.TabIndex = 2;
+            this.dataGridView_jobGrid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_jobGrid_CellClick);
+            this.dataGridView_jobGrid.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_jobGrid_CellMouseEnter);
+            this.dataGridView_jobGrid.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_jobGrid_CellMouseLeave);
             this.dataGridView_jobGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_jobGrid_ColumnHeaderMouseClick);
             // 
             // Time

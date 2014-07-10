@@ -45,21 +45,9 @@ namespace oDeskNotifier {
             else { MessageBox.Show("Database file " + databaseFilename + " not found."); this.Close(); return; }
 
             var jobs = GetCurretnList(rssUrl);
-            jobs.Reverse();
             database.Update(jobs);
             AddRow(jobs);
-            DeleteExtraRows(maxRow);
-            /*
-            var rect = Screen.AllScreens[0].WorkingArea;
-            var p1 = new Point(rect.Right - SlidePopUp.WindowSize.Width, rect.Bottom);
-            var p2 = new Point(rect.Right - SlidePopUp.WindowSize.Width, rect.Bottom - SlidePopUp.WindowSize.Height);
-            var param = new SlidePopUp.Parameters(this, p1, p2);
-            param.TweenDuration = 5;
-            param.TotalDuration = 10000;
-            param.Budget = 100;
-            var p = new SlidePopUp(param);
-            p.Show();
-            */
+           
             new Thread(MainThread).Start();
             if (dataGridView_jobGrid.CurrentCell != null) dataGridView_jobGrid.CurrentCell.Selected = false;
         }
@@ -71,7 +59,7 @@ namespace oDeskNotifier {
             try {
                 xdoc.LoadXml(rss);
             }
-            catch { MessageBox.Show("Bad RSS", "LOL"); }
+            catch { WarningMessage("Bad RSS", "LOL"); }
             var nodes = xdoc.SelectNodes("//item");
             foreach (XmlElement node in nodes) {
                 oJob j = new oJob();
@@ -128,6 +116,23 @@ namespace oDeskNotifier {
                 }
                 catch { }
             }
+        }
+
+        private void WarningMessage(string message, string title) {
+            var rect = Screen.AllScreens[0].WorkingArea;
+            var p1 = new Point(rect.Right, rect.Bottom - SlidePopUp.WindowSize.Height);
+            var p2 = new Point(rect.Right - SlidePopUp.WindowSize.Width, rect.Bottom - SlidePopUp.WindowSize.Height);
+            var param = new SlidePopUp.Parameters(this, p1, p2);
+            param.TweenDuration = 5;
+            param.TotalDuration = 10;
+            param.LabelLinkText = title;
+            param.LabelLinkTag = "http://google.com";
+            param.LabelLinkTooltip = message;
+            param.Budget = -1;
+            var slidePopUp = new SlidePopUp(param);
+            if (this.InvokeRequired)
+                Invoke(new Action(() => slidePopUp.Show()));
+            else slidePopUp.Show();
         }
 
         private void AddRow(oJob job) {

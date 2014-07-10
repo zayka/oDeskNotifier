@@ -65,6 +65,8 @@ namespace oDeskNotifier {
             if (param.Budget > 0) label_budget.Text = "Budget: $" + param.Budget;
             else label_budget.Text = "Budget: Hourly";
 
+            if (param.Budget < 0) label_budget.Visible = false;
+
             this.Location = from;
             new Thread(TweenMove).Start();
 
